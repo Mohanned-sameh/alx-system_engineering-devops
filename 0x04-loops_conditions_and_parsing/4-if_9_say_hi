@@ -5,10 +5,11 @@
 number=0
 while [ $number -lt 10 ]
 do
-	number=$((number+1))
-	if [[ $number -eq 9 ]]; then
+	if [ $number = 9 ]
+	then
 		echo "Hi"
 	else
 		echo "Best School"
 	fi
+	number=$((number + 1))
 done
