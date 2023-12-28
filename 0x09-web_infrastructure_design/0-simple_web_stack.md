@@ -1,5 +1,4 @@
-[Image](https://i.imgur.com/VXjhbFa.png)
-
+<a href="https://i.imgur.com/VXjhbFa.png" target="_blank">Image</a>
 Infrastructure Components:
 
 Server: A physical or virtual machine with necessary resources to host the web infrastructure.
