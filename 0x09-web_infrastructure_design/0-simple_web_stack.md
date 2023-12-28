@@ -1,4 +1,4 @@
-[Image] (https://i.imgur.com/VXjhbFa.png)
+[Image](https://i.imgur.com/VXjhbFa.png)
 
 Infrastructure Components:
 
