@@ -1,4 +1,5 @@
 [image](https://i.imgur.com/VXjhbFa.png)
+<br>
 Infrastructure Components:
 
 Server: A physical or virtual machine with necessary resources to host the web infrastructure.
