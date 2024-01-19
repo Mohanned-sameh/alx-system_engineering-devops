@@ -1,8 +1,7 @@
-# creates a file with the content "I Love Puppet"
-# in /tmp/school
+# creates a file in /tmp
 
 file { '/tmp/school':
-  content => 'I Love Puppet',
+  content =>'I love Puppet',
   mode    => '0744',
   owner   => 'www-data',
   group   => 'www-data',
