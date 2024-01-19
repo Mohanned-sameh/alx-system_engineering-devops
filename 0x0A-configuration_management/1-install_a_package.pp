@@ -1,2 +1,5 @@
 # Install flask
-RUN pip install flask
+
+package { 'flask':
+provider => 'pip'
+}
