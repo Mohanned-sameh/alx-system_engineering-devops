@@ -1,12 +1,15 @@
 # changes to config file 
 
-file { '/home/mohanned/.ssh/config':
-  ensure => present,
-  content => "
-    Host server
-    HostName <server_hostname>
-    User <username>
-    IdentityFile ~/.ssh/school
-    PasswordAuthentication no
-  ",
+file_line {
+  'Turn off password authentication':
+    ensure => present,
+    path => '/etc/ssh/ssh_config',
+    line => 'PasswordAuthentication no',
+}
+
+file_line {
+  'Declare identity file':
+    ensure => present,
+    path => '/etc/ssh/ssh_config',
+    line => 'IdentityFile ~/.ssh/school',
 }
