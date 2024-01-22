@@ -5,4 +5,4 @@ if [ "$#" -ne 4 ]; then
     echo "$msg"
     exit 1
 fi
-scp -i "$4" "$1" "$3"@"$2":/tmp/
+scp -i "$4" "$1" "$3"@"$2":/
