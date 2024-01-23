@@ -1,33 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# A Script that configures a new Ubuntu machine to Perform a 301-redirection
 
-# Update package list
-sudo apt-get update -y
+# Exit immediately if a command exits with a non-zero status
+set -e
 
-# Install Nginx
-sudo apt-get install nginx -y
-
-# Create a basic HTML page with the redirection message
-echo '<html><head><title>301 Moved Permanently</title></head><body><p>This page has moved <a href="https://www.youtube.com/watch?v=QH2-TGUlwu4">here</a>.</p></body></html>' | sudo tee /var/www/html/redirect_me/index.html > /dev/null
-
-# Make sure Nginx is listening on port 80
-sudo sed -i 's/^\s*listen\s*\(.*\);/listen 80;/' /etc/nginx/sites-available/default
-
-# Configure the redirection
-echo 'server {' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '    listen 80;' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '    server_name _;' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '    location /redirect_me {' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '    }' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '}' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-
-# Restart Nginx (without using systemctl)
-sudo /etc/init.d/nginx restart
-
-# Check if Nginx is running
-nginx_pid=$(pgrep nginx)
-if [ -z "$nginx_pid" ]; then
-  echo "Nginx failed to start. Check the logs in /var/log/nginx/error.log for more information."
-else
-  echo "Nginx is running on port 80 with redirection configured."
+# Check if Nginx is already installed
+if ! command -v nginx &> /dev/null
+then
+    sudo apt-get update
+    sudo apt-get install -y nginx
 fi
+
+# Creating a new Nginx configuration file
+echo -e "server {\n\tserver_name _;\n\trewrite ^/redirect_me https://youtube.com/watch?v=QH2-TGUlwu4 permanent;\n}" | sudo tee /etc/nginx/sites-available/redirect_config
+
+# Creating a symbolic link to enable the new configuration
+sudo ln -s /etc/nginx/sites-available/redirect_config /etc/nginx/sites-enabled/
+
+# Testing Nginx configuration before restarting
+sudo nginx -t
+
+# Restarting Nginx service
+sudo service nginx restart
