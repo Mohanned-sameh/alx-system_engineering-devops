@@ -1,35 +1,39 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Configures a new ubuntu machine by installing
+# Nginx where it should be listening on port 80
+# Serve a page that would return a Hello World string
+#
 
-# Update package list
-sudo apt-get update -y
+echo -e "Updating and installing Nginx.\n"
+sudo apt-get update -y -qq && \
+	 sudo apt-get install nginx -y
 
-# Install Nginx
-sudo apt-get install nginx -y
+echo -e "\nSetting up some minor stuff.\n"
 
-# Create a basic HTML page with the custom 404 message
-echo '<html><head><title>404 Not Found</title></head><body><p>Ceci n'\''est pas une page</p></body></html>' | sudo tee /var/www/html/custom_404.html > /dev/null
+# starting nginx service
+sudo service nginx start
 
-# Make sure Nginx is listening on port 80
-sudo sed -i 's/^\s*listen\s*\(.*\);/listen 80;/' /etc/nginx/sites-available/default
+# allowing nginx on firewall
+sudo ufw allow 'Nginx HTTP'
 
-# Configure the custom 404 page
-echo 'server {' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '    listen 80;' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '    server_name _;' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '    error_page 404 /custom_404.html;' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '    location = /custom_404.html {' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '        root /var/www/html;' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '        internal;' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '    }' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-echo '}' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
+# Give the user ownership to website files for easy editing
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www
 
-# Restart Nginx (without using systemctl)
-sudo /etc/init.d/nginx restart
+# Backup default index
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
 
-# Check if Nginx is running
-nginx_pid=$(pgrep nginx)
-if [ -z "$nginx_pid" ]; then
-  echo "Nginx failed to start. Check the logs in /var/log/nginx/error.log for more information."
-else
-  echo "Nginx is running on port 80 with custom 404 page configured."
-fi
+# Creating new index
+echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
+
+# Setting up /redirect_me to a youtube video
+sudo sed -i '24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
+
+# Set up a 404 page
+echo "Ceci n'est pas une page" >> /var/www/html/error_404.html
+sudo sed -i '25i\	error_page 404 /error_404.html;' /etc/nginx/sites-available/default
+
+# Restarting nginx
+sudo service nginx restart
+
+echo -e "\nCompleted.\n"
