@@ -15,7 +15,7 @@ echo "server
 	listen [::]:80 default_server;
 
 	root /var/www/html;
-	index index.html index.htm index.nginx-debian.html;
+	include mime.types;
 	server_name _;
 	location / {
 		root /var/www/html;      
