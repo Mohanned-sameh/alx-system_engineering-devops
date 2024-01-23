@@ -9,8 +9,20 @@ sudo apt-get install -y nginx
 echo "Hello World!" | sudo tee /var/www/html/index.html
 
 # Performing a 301 Redirection
-string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/youtube.com\/watch?v=QH2-TGUlwu4 permanent;"
-sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
+config="server {
+    listen 80;
+    listen [::]:80 default_server;
+    include mime.types;
+    root /var/www/html;
 
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    location / {
+        add_header Content-Type text/html;
+        return 200 'Hello World!';
+    }
+}"
 # Restarting Nginx service
 sudo service nginx restart
