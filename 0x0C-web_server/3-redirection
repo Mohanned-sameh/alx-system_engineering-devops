@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # Configure nginx in a new Ubuntu machine with a permanent redirect
-
 sudo apt-get update
 sudo apt-get install nginx -y
 echo "Hello World!" | sudo tee /usr/share/nginx/html/index.html
@@ -13,11 +12,8 @@ new_config=\
         index index.html index.htm index.nginx-debian.html;
         server_name _;
         location / {
-                try_files \$uri \$uri/ =404;
-        }
-        
-        if (\$request_filename ~ redirect_me){
-            rewrite ^ https://www.youtube.com/@tpauldike permanent;
+                add_header X-Served-By \$hostname;
+                return 301 http://google.com/;
         }
 }
 "
