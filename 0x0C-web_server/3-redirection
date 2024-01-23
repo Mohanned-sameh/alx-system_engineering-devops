@@ -8,8 +8,7 @@ apt-get install -y nginx
 # Creating an index.html page
 echo "Hello World!" | sudo tee /var/www/html/index.html
 
-echo "server
-{
+echo "server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
