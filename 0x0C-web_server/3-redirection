@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
-# install ngix server
-
+# Updating Packages before performing installations
 sudo apt-get update
-sudo apt-get -y install nginx
+sudo apt-get install -y nginx
+
+# Creating an index.html page
 echo "Hello World!" | sudo tee /var/www/html/index.html
-sed -i '/listen 80 default_server/a rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
-sudo service nginx reload
-sudo service nginx start
+
+# Performing a "moved permanently redirection" (301)
+new_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/besthor permanent;"
+sudo sed -i "s/server_name _;/$new_string/" /etc/nginx/sites-enabled/default
+
+# Testing configurations for syntax errors
+sudo nginx -t
+
+# Restart nginx after implementing changes
+sudo service nginx restart
