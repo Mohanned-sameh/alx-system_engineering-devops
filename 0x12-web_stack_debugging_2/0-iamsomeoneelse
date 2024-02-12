@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
 # run a script as another user
-sudo -u "$1" whoami
+if [ "$#" -ne 1 ]; then
+    sudo whoami
+    exit 1
+else
+    sudo -u "$1" whoami
+fi
