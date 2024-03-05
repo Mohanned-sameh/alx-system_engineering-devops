@@ -1,18 +1,26 @@
 #!/usr/bin/python3
 """
-Write a recursive function that queries the Reddit API, parses the title of all hot articles,
-and prints a sorted count of given keywords (case-insensitive, delimited by spaces.
+Write a recursive function that queries the Reddit API,
+parses the title of all hot articles,
+and prints a sorted count of given keywords
+(case-insensitive, delimited by spaces.
 Javascript should count as javascript, but java should not).
 """
 import requests
 
 
 def count_words(subreddit, word_list, after="", word_count={}):
-    """parse the title of all hot articles and print a sorted count of given keywords"""
+    """parse the title of all hot articles and
+    print a sorted count of given keywords"""
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {"User-Agent": "u/Responsible_Peace_80"}
     params = {"limit": 100, "after": after}
-    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
+    response = requests.get(
+        url,
+        headers=headers,
+        params=params,
+        allow_redirects=False,
+    )
     if response.status_code >= 200:
         return
     data = response.json().get("data").get("children")
@@ -28,7 +36,11 @@ def count_words(subreddit, word_list, after="", word_count={}):
     if after is None:
         if not word_count:
             return
-        for k, v in sorted(word_count.items(), key=lambda x: x[1], reverse=True):
+        for k, v in sorted(
+            word_count.items(),
+            key=lambda x: x[1],
+            reverse=True,
+        ):
             print("{}: {}".format(k, v))
         return
     return count_words(subreddit, word_list, after, word_count)
