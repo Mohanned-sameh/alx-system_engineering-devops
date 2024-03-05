@@ -4,12 +4,10 @@ import requests
 
 
 def number_of_subscribers(subreddit):
-    """Reddit API endpoint for subreddit information"""
-    url = f"https://www.reddit.com/r/{subreddit}/about.json"
-    headers = {"User-Agent": "u/nourhan1414"}
+    """print the number of subscribers"""
+    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+    headers = {"User-Agent": "u/Responsible_Peace_80"}
     response = requests.get(url, headers=headers, allow_redirects=False)
     if response.status_code != 200:
         return 0
-    data = response.json().get("data")
-    subscribers = data.get("subscribers")
-    return subscribers
+    return response.json().get("data").get("subscribers")
